@@ -98,9 +98,9 @@ elif page == "🔍 Property Analyzer":
             st.info("Property saved to database.")
 
             st.subheader("Extracted Property Data")
-
-            col1, col2, col3, col4, col5, col6, col7, col8, col9, col10 = st.columns(10)
-
+            
+            left_col, right_col = st.columns(2)
+            
             listing_id = result.get("listing_id")
             asking_price = result.get("asking_price")
             area_m2 = result.get("area_m2")
