@@ -70,6 +70,14 @@ def parse_data_attribute(soup: BeautifulSoup, attribute_name: str):
 
     return None
 
+def parse_condo_fee(html: str):
+    match = re.search(r"Condomínio\s*<br\s*/?>\s*R\$\s*([\d.,]+)", html)
+
+    if match:
+        return clean_number(match.group(1))
+
+    return None
+
 def parse_dfimoveis_listing(url: str) -> dict:
     html = fetch_page(url)
     soup = BeautifulSoup(html, "lxml")
@@ -82,6 +90,7 @@ def parse_dfimoveis_listing(url: str) -> dict:
         "listing_id": extract_listing_id(url),
         "page_title": page_title,
         "asking_price": parse_price(soup),
+        "condo_fee": parse_condo_fee(html),
         "area_m2": parse_area(soup),
         "bedrooms": clean_number(parse_data_attribute(soup, "data-quartos")),
         "property_type": parse_data_attribute(soup, "data-tipo"),

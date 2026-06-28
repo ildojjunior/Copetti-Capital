@@ -148,6 +148,7 @@ elif page == "🗄 Database":
             neighborhood,
             cep,
             asking_price,
+            condo_fee,
             area_m2,
             bedrooms,
             recommendation,
