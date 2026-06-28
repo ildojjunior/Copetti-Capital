@@ -84,6 +84,37 @@ def calculate_price_per_m2(asking_price, area_m2):
 
     return None
 
+def parse_iptu(html: str):
+    match = re.search(
+        r"IPTU R\$:\s*<span[^>]*>\s*([\d.,]+)\s*</span>",
+        html
+    )
+
+    if match:
+        return clean_number(match.group(1))
+
+    return None
+
+def parse_floor(html: str):
+    match = re.search(
+        r"Andar do Apartamento:\s*<span[^>]*>\s*(\d+)",
+        html
+    )
+
+    if match:
+        return int(match.group(1))
+
+    return None
+
+def parse_list_text_field(html: str, label: str):
+    pattern = rf"{label}:\s*<span[^>]*>\s*([^<]+)\s*</span>"
+    match = re.search(pattern, html)
+
+    if match:
+        return match.group(1).strip()
+
+    return None
+
 def parse_dfimoveis_listing(url: str) -> dict:
     html = fetch_page(url)
     soup = BeautifulSoup(html, "lxml")
@@ -96,13 +127,17 @@ def parse_dfimoveis_listing(url: str) -> dict:
         "listing_id": extract_listing_id(url),
         "page_title": page_title,
         "asking_price": parse_price(soup),
+        "iptu": parse_iptu(html),
         "condo_fee": parse_condo_fee(html),
         "area_m2": parse_area(soup),
         "price_per_m2": calculate_price_per_m2(parse_price(soup), parse_area(soup)),
+        "floor": parse_floor(html),
         "bedrooms": clean_number(parse_data_attribute(soup, "data-quartos")),
         "property_type": parse_data_attribute(soup, "data-tipo"),
         "property_subtype": parse_data_attribute(soup, "data-subtipo"),
         "transaction_type": parse_data_attribute(soup, "data-negocio"),
+        "solar_orientation": parse_list_text_field(html, "Posição do Sol"),
+        "property_position": parse_list_text_field(html, "Posição do Imóvel"),
         "neighborhood": parse_data_attribute(soup, "data-bairro"),
         "cep_partial": parse_data_attribute(soup, "data-cepparcial"),
         "city": parse_data_attribute(soup, "data-cidade"),
