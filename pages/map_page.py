@@ -1,7 +1,5 @@
 import streamlit as st
 
-st.set_page_config(layout="wide")
-
 from streamlit.components.v1 import html
 
 from database.db_utils import get_properties_dataframe
@@ -14,7 +12,7 @@ def show_map_page():
 
     properties = get_properties_dataframe()
     st.write(properties[["listing_id", "location_code"]])
-    
+
     property_map = build_property_map(properties)
 
     html(
