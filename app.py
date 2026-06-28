@@ -99,7 +99,7 @@ elif page == "🔍 Property Analyzer":
 
             st.subheader("Extracted Property Data")
 
-            col1, col2, col3, col4, col5, col6, col7, col8, col9, col10 = st.columns(5)
+            col1, col2, col3, col4, col5, col6, col7, col8, col9, col10 = st.columns(10)
 
             listing_id = result.get("listing_id")
             asking_price = result.get("asking_price")
@@ -126,7 +126,7 @@ elif page == "🔍 Property Analyzer":
             col8.metric("Market Gap", f"{result.get('market_gap') * 100:.2f}%" if result.get("market_gap") is not None else "Not found")
             col9.metric("Recommendation", result.get("recommendation"))
             col10.metric("Investment Score", f"{result.get('investment_score')}/100")
-            
+
             st.write("Source:", result.get("source"))
             st.write("URL:", result.get("listing_url"))
             st.write("Page title:", result.get("page_title"))
