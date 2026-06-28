@@ -115,6 +115,24 @@ def parse_list_text_field(html: str, label: str):
 
     return None
 
+def parse_location_code(url: str):
+    patterns = [
+        r"cln-(\d+)",
+        r"cls-(\d+)",
+        r"sqn-(\d+)",
+        r"sqs-(\d+)",
+        r"sgan-(\d+)",
+        r"crnw-(\d+)",
+    ]
+
+    for pattern in patterns:
+        match = re.search(pattern, url.lower())
+        if match:
+            prefix = pattern.split("-")[0].replace("r\"", "").upper()
+            return f"{prefix}{match.group(1)}"
+
+    return None
+
 def parse_dfimoveis_listing(url: str) -> dict:
     html = fetch_page(url)
     soup = BeautifulSoup(html, "lxml")
@@ -140,6 +158,7 @@ def parse_dfimoveis_listing(url: str) -> dict:
         "property_position": parse_list_text_field(html, "Posição do Imóvel"),
         "neighborhood": parse_data_attribute(soup, "data-bairro"),
         "cep_partial": parse_data_attribute(soup, "data-cepparcial"),
+        "location_code": parse_location_code(url),
         "city": parse_data_attribute(soup, "data-cidade"),
         "uf": parse_data_attribute(soup, "data-uf"),
         "html_length": len(html),

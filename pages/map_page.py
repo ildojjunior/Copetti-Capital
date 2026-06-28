@@ -1,4 +1,7 @@
 import streamlit as st
+
+st.set_page_config(layout="wide")
+
 from streamlit.components.v1 import html
 
 from database.db_utils import get_properties_dataframe
@@ -15,5 +18,5 @@ def show_map_page():
 
     html(
         property_map._repr_html_(),
-        height=600,
+        height=850,
     )

@@ -58,6 +58,7 @@ def save_analyzed_property(result: dict):
             date_collected,
             last_updated,
             neighborhood,
+            location_code,
             cep,
             asking_price,
             condo_fee,
@@ -74,7 +75,7 @@ def save_analyzed_property(result: dict):
             status,
             recommendation
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
             str(uuid.uuid4()),
@@ -84,6 +85,7 @@ def save_analyzed_property(result: dict):
             now,
             now,
             result.get("neighborhood"),
+            result.get("location_code"),
             result.get("cep_partial"),
             result.get("asking_price"),
             result.get("condo_fee"),
