@@ -6,6 +6,7 @@ from valuation.valuation_engine import evaluate_property
 from database.db_utils import get_dashboard_metrics, save_analyzed_property
 from scraper.dfimoveis import parse_dfimoveis_listing
 from valuation.market_intelligence import get_market_benchmarks
+from scoring.investment_score import calculate_investment_score
 
 # -----------------------------
 # Page Configuration
@@ -89,6 +90,7 @@ elif page == "🔍 Property Analyzer":
             with st.spinner("Analyzing property..."):
                 result = parse_dfimoveis_listing(property_url)
                 result = evaluate_property(result)
+                result = calculate_investment_score(result)
 
             st.success("Property analyzed successfully!")
 
@@ -97,7 +99,7 @@ elif page == "🔍 Property Analyzer":
 
             st.subheader("Extracted Property Data")
 
-            col1, col2, col3, col4, col5, col6, col7, col8, col9 = st.columns(9)
+            col1, col2, col3, col4, col5, col6, col7, col8, col9, col10 = st.columns(5)
 
             listing_id = result.get("listing_id")
             asking_price = result.get("asking_price")
@@ -123,7 +125,8 @@ elif page == "🔍 Property Analyzer":
             col7.metric("Benchmark R$/m²", f"R$ {result.get('avg_price_m2'):,.0f}" if result.get("avg_price_m2") else "Not found")
             col8.metric("Market Gap", f"{result.get('market_gap') * 100:.2f}%" if result.get("market_gap") is not None else "Not found")
             col9.metric("Recommendation", result.get("recommendation"))
-
+            col10.metric("Investment Score", f"{result.get('investment_score')}/100")
+            
             st.write("Source:", result.get("source"))
             st.write("URL:", result.get("listing_url"))
             st.write("Page title:", result.get("page_title"))
@@ -186,7 +189,7 @@ elif page == "📊 Market Intelligence":
     else:
         st.subheader("Neighborhood Benchmarks")
         st.dataframe(benchmarks, use_container_width=True)
-        
+
 # -----------------------------
 # MAP
 # -----------------------------
