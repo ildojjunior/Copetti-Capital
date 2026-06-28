@@ -96,7 +96,7 @@ elif page == "🔍 Property Analyzer":
 
             st.subheader("Extracted Property Data")
 
-            col1, col2, col3, col4, col5 = st.columns(5)
+            col1, col2, col3, col4, col5, col6 = st.columns(6)
 
             listing_id = result.get("listing_id")
             asking_price = result.get("asking_price")
@@ -116,7 +116,9 @@ elif page == "🔍 Property Analyzer":
 
             col4.metric("Bedrooms", result.get("bedrooms"))
             col5.metric("Neighborhood", result.get("neighborhood"))
-
+            
+            col6.metric("Condo Fee", f"R$ {result.get('condo_fee'):,.0f}" if result.get("condo_fee") else "Not found")
+            
             st.write("Source:", result.get("source"))
             st.write("URL:", result.get("listing_url"))
             st.write("Page title:", result.get("page_title"))
@@ -131,9 +133,9 @@ elif page == "🔍 Property Analyzer":
 # -----------------------------
 # DATABASE
 # -----------------------------
-elif page == "🗄 Database":
+elif page == "🗄️ Database":
 
-    st.title("🗄 Property Database")
+    st.title("🗄️ Property Database")
 
     import sqlite3
     import pandas as pd
