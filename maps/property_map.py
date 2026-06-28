@@ -46,6 +46,7 @@ def build_property_map(properties_df):
         return m
 
     location_reference = load_location_reference()
+    print(properties_df[["listing_id", "location_code"]])
 
     for _, row in properties_df.iterrows():
         location_code = row.get("location_code")
@@ -55,7 +56,10 @@ def build_property_map(properties_df):
 
         location_code = str(location_code).strip().upper()
         coords = location_reference.get(location_code)
-
+        
+        print("Location code:", location_code)
+        print("Coordinates:", coords)
+        
         if coords is None:
             continue
 

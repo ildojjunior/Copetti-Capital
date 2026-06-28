@@ -13,7 +13,8 @@ def show_map_page():
     st.write("Map of analyzed properties.")
 
     properties = get_properties_dataframe()
-
+    st.write(properties[["listing_id", "location_code"]])
+    
     property_map = build_property_map(properties)
 
     html(
