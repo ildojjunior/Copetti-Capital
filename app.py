@@ -5,7 +5,7 @@ from pathlib import Path
 from valuation.valuation_engine import evaluate_property
 from database.db_utils import get_dashboard_metrics, save_analyzed_property
 from scraper.dfimoveis import parse_dfimoveis_listing
-
+from valuation.market_intelligence import get_market_benchmarks
 
 # -----------------------------
 # Page Configuration
@@ -43,11 +43,11 @@ page = st.sidebar.radio(
         "🏠 Dashboard",
         "🔍 Property Analyzer",
         "🗄️ Database",
+        "📊 Market Intelligence",
         "🗺️ Map",
         "💼 Portfolio",
     ],
 )
-
 
 # -----------------------------
 # DASHBOARD
@@ -172,6 +172,21 @@ elif page == "🗄️ Database":
 
     st.dataframe(df, use_container_width=True)
 
+# -----------------------------
+# MARKET INTELLIGENCE
+# -----------------------------
+elif page == "📊 Market Intelligence":
+
+    st.title("📊 Market Intelligence")
+
+    benchmarks = get_market_benchmarks()
+
+    if benchmarks.empty:
+        st.info("No market benchmarks available yet. Analyze more properties first.")
+    else:
+        st.subheader("Neighborhood Benchmarks")
+        st.dataframe(benchmarks, use_container_width=True)
+        
 # -----------------------------
 # MAP
 # -----------------------------
