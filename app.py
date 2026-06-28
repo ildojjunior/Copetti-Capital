@@ -12,6 +12,7 @@ from valuation.fair_value import estimate_fair_value
 from finance.investment_metrics import calculate_investment_metrics
 from pages.dashboard import show_dashboard
 from pages.analyzer import show_analyzer
+from pages.map_page import show_map_page
 
 # -----------------------------
 # Page Configuration
@@ -125,10 +126,7 @@ elif page == "📊 Market Intelligence":
 # MAP
 # -----------------------------
 elif page == "🗺️ Map":
-
-    st.title("🗺️ Investment Map")
-    st.info("Interactive map coming soon.")
-
+    show_map_page()
 
 # -----------------------------
 # PORTFOLIO
