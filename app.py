@@ -10,6 +10,7 @@ from scoring.investment_score import calculate_investment_score
 from reports.investment_summary import generate_investment_summary
 from valuation.fair_value import estimate_fair_value
 from finance.investment_metrics import calculate_investment_metrics
+from pages.dashboard import show_dashboard
 
 # -----------------------------
 # Page Configuration
@@ -37,8 +38,6 @@ else:
 if logo:
     st.sidebar.image(logo, use_container_width=True)
 
-st.sidebar.markdown("### Copetti Capital")
-st.sidebar.markdown("*Investir. Analisar. Gerar Valor.*")
 st.sidebar.divider()
 
 page = st.sidebar.radio(
@@ -57,23 +56,7 @@ page = st.sidebar.radio(
 # DASHBOARD
 # -----------------------------
 if page == "🏠 Dashboard":
-
-    st.title("🏠 Dashboard")
-    st.subheader("Real Estate Investment Intelligence")
-
-    metrics = get_dashboard_metrics()
-
-    c1, c2, c3, c4 = st.columns(4)
-
-    c1.metric("Properties", metrics["total_properties"])
-    c2.metric("BUY", metrics["buy_count"])
-    c3.metric("NEGOTIATE", metrics["negotiate_count"])
-    c4.metric("PASS", metrics["pass_count"])
-
-    st.divider()
-
-    st.header("Today's Market")
-    st.info("No market scan has been performed yet.")
+    show_dashboard()
 
 # -----------------------------
 # PROPERTY ANALYZER
@@ -232,7 +215,7 @@ elif page == "🔍 Property Analyzer":
 
         else:
             st.warning("Please paste a property URL.")
-            
+
 # -----------------------------
 # DATABASE
 # -----------------------------
