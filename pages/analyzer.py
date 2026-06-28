@@ -8,6 +8,7 @@ from finance.investment_metrics import calculate_investment_metrics
 from scoring.investment_score import calculate_investment_score
 from reports.investment_summary import generate_investment_summary
 from valuation.negotiation import generate_negotiation_strategy
+from valuation.weighted_avm import estimate_weighted_fair_value
 from valuation.comparables import (
     find_comparable_properties,
     summarize_comparables,
@@ -31,6 +32,8 @@ def show_analyzer():
 
                 comparables = find_comparable_properties(result)
                 comparable_summary = summarize_comparables(comparables)
+
+                result = estimate_weighted_fair_value(result, comparables)
 
                 summary = generate_investment_summary(result)
                 negotiation = generate_negotiation_strategy(result)
@@ -178,6 +181,17 @@ def show_analyzer():
                         else "Not available"
                     ),
                 )
+
+                st.metric(
+                      "Weighted AVM Value",
+                    (
+                          f"R$ {result.get('weighted_fair_value'):,.0f}"
+                          if result.get("weighted_fair_value")
+                          else "Not available"
+                    ),
+                )
+                
+                st.caption(result.get("weighted_avm_method"))
 
                 st.divider()
 
