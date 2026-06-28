@@ -79,6 +79,8 @@ def find_comparable_properties(result: dict, max_results: int = 10):
     if df.empty:
         return df
 
+    df = df.drop_duplicates(subset="listing_id", keep="last")
+
     df["similarity_score"] = df.apply(
         lambda row: calculate_similarity_score(result, row.to_dict()),
         axis=1,
