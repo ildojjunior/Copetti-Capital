@@ -7,6 +7,7 @@ from valuation.fair_value import estimate_fair_value
 from finance.investment_metrics import calculate_investment_metrics
 from scoring.investment_score import calculate_investment_score
 from reports.investment_summary import generate_investment_summary
+from valuation.negotiation import generate_negotiation_strategy
 from valuation.comparables import (
     find_comparable_properties,
     summarize_comparables,
@@ -32,6 +33,7 @@ def show_analyzer():
                 comparable_summary = summarize_comparables(comparables)
 
                 summary = generate_investment_summary(result)
+                negotiation = generate_negotiation_strategy(result)
 
             st.success("Property analyzed successfully!")
 
@@ -73,6 +75,35 @@ def show_analyzer():
 
             st.markdown("### Executive Summary")
             st.markdown(summary)
+            st.divider()
+
+            st.markdown("### Negotiation Strategy")
+
+            if negotiation is None:
+                st.info("Negotiation strategy is not available for this property yet.")
+            else:
+                n1, n2, n3 = st.columns(3)
+
+                n1.metric(
+                    "Aggressive Offer",
+                    f"R$ {negotiation['aggressive_offer']:,.0f}",
+                )
+
+                n2.metric(
+                    "Fair Offer",
+                    f"R$ {negotiation['fair_offer']:,.0f}",
+                )
+
+                n3.metric(
+                    "Competitive Offer",
+                    f"R$ {negotiation['competitive_offer']:,.0f}",
+                )
+
+                st.caption(
+                    f"Estimated discount from asking price: "
+                    f"{negotiation['discount_from_asking']}%"
+                )
+
             st.divider()
 
             left_col, right_col = st.columns(2)
@@ -217,15 +248,17 @@ def show_analyzer():
                         "area_m2",
                         "price_per_m2",
                         "similarity_score",
+                        "similarity_reason",
                     ]
                 ].rename(
                     columns={
                         "listing_id": "Listing ID",
                         "neighborhood": "Neighborhood",
                         "asking_price": "Asking Price",
-                        "area_m2": "Area m²",
+                        "area_m2": "Area (m²)",
                         "price_per_m2": "Price/m²",
                         "similarity_score": "Similarity",
+                        "similarity_reason": "Why Similar",
                     }
                 )
 
