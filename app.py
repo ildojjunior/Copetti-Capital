@@ -75,7 +75,6 @@ if page == "🏠 Dashboard":
     st.header("Today's Market")
     st.info("No market scan has been performed yet.")
 
-
 # -----------------------------
 # PROPERTY ANALYZER
 # -----------------------------
@@ -96,7 +95,6 @@ elif page == "🔍 Property Analyzer":
                 result = estimate_fair_value(result)
                 result = calculate_investment_metrics(result)
                 result = calculate_investment_score(result)
-                
                 summary = generate_investment_summary(result)
 
             st.success("Property analyzed successfully!")
@@ -105,145 +103,136 @@ elif page == "🔍 Property Analyzer":
             st.info("Property saved to database.")
 
             st.subheader("Investment Report")
-            
-            # ============================================
+
             # Executive Dashboard
-            # ============================================
+            kpi1, kpi2, kpi3 = st.columns(3)
 
-             kpi1, kpi2, kpi3 = st.columns(3)
-            
             with kpi1:
-                 st.metric(
-                      "Investment Score",
-                      f"{result.get('investment_score')}/100",
-                      result.get("score_label"),
-                      )
-            
-            with kpi2:
-                 st.metric(
-                      "Estimated Fair Value",
-                      f"R$ {result.get('estimated_fair_value'):,.0f}"
-                      if result.get("estimated_fair_value")
-                      else "Not available",
-                      )
-            
-             with kpi3:
-                 st.metric(
-                      "Suggested Offer",
-                      f"R$ {result.get('suggested_offer_price'):,.0f}"
-                      if result.get("suggested_offer_price")
-                      else "Not available",
-                      )
-
-             st.divider()
-
-             st.markdown("### Executive Summary")
-             st.markdown(summary)
-             st.divider()
-
-             left_col, right_col = st.columns(2)
-            
-            with left_col:
-                st.subheader("Property Data")
-                st.metric("Listing ID", result.get("listing_id"))
-                st.metric("Asking Price", f"R$ {result.get('asking_price'):,.0f}" if result.get("asking_price") else "Not found")
-                st.metric("Area", f"{result.get('area_m2')} m²" if result.get("area_m2") else "Not found")
-                st.metric("Bedrooms", result.get("bedrooms"))
-                st.metric("Condo Fee", f"R$ {result.get('condo_fee'):,.0f}" if result.get("condo_fee") else "Not found")
-                st.metric("Neighborhood", result.get("neighborhood"))
-                
-                st.write("Source:", result.get("source"))
-                st.write("URL:", result.get("listing_url"))
-            
-            with right_col:
-                
-                st.subheader("Investment Analysis")
-                
                 st.metric(
                     "Investment Score",
-                    f"{result.get('investment_score')}/100"
-                    )
-                
-                st.markdown(f"### {result.get('score_label')}")
-                
-                st.metric(
-                    "Recommendation",
-                    result.get("recommendation")
-                    )
-                
-                st.divider()
-                
+                    f"{result.get('investment_score')}/100",
+                    result.get("score_label"),
+                )
+
+            with kpi2:
                 st.metric(
                     "Estimated Fair Value",
                     f"R$ {result.get('estimated_fair_value'):,.0f}"
                     if result.get("estimated_fair_value")
-                    else "Not available"
-                    )
-                
+                    else "Not available",
+                )
+
+            with kpi3:
                 st.metric(
                     "Suggested Offer",
                     f"R$ {result.get('suggested_offer_price'):,.0f}"
                     if result.get("suggested_offer_price")
-                    else "Not available"
-                    )
-                
+                    else "Not available",
+                )
+
+            st.divider()
+
+            st.markdown("### Executive Summary")
+            st.markdown(summary)
+            st.divider()
+
+            left_col, right_col = st.columns(2)
+
+            with left_col:
+                st.subheader("Property Data")
+
+                st.metric("Listing ID", result.get("listing_id"))
+                st.metric(
+                    "Asking Price",
+                    f"R$ {result.get('asking_price'):,.0f}"
+                    if result.get("asking_price")
+                    else "Not found",
+                )
+                st.metric(
+                    "Area",
+                    f"{result.get('area_m2')} m²"
+                    if result.get("area_m2")
+                    else "Not found",
+                )
+                st.metric("Bedrooms", result.get("bedrooms"))
+                st.metric(
+                    "Condo Fee",
+                    f"R$ {result.get('condo_fee'):,.0f}"
+                    if result.get("condo_fee")
+                    else "Not found",
+                )
+                st.metric("Neighborhood", result.get("neighborhood"))
+
+                st.write("Source:", result.get("source"))
+                st.write("URL:", result.get("listing_url"))
+
+            with right_col:
+                st.subheader("Investment Analysis")
+
+                st.metric(
+                    "Recommendation",
+                    result.get("recommendation"),
+                )
+
                 st.metric(
                     "Market Gap",
-                    f"{result.get('market_gap')*100:.2f}%"
+                    f"{result.get('market_gap') * 100:.2f}%"
                     if result.get("market_gap") is not None
-                    else "Not available"
-                    )
-                
+                    else "Not available",
+                )
+
                 st.metric(
                     "Price per m²",
                     f"R$ {result.get('price_per_m2'):,.0f}"
                     if result.get("price_per_m2")
-                    else "Not available"
-                    )
-                
+                    else "Not available",
+                )
+
                 st.metric(
                     "Neighborhood Benchmark",
                     f"R$ {result.get('avg_price_m2'):,.0f}"
                     if result.get("avg_price_m2")
-                    else "Not available"
-                    )
-                
+                    else "Not available",
+                )
+
                 st.divider()
-                
+
                 st.subheader("Rental Analysis")
-                
+
                 st.metric(
-                     "Estimated Rent",
-                     f"R$ {result.get('estimated_rent'):,.0f}"
-                     if result.get("estimated_rent")
-                     else "Not available"
-                     )
+                    "Estimated Rent",
+                    f"R$ {result.get('estimated_rent'):,.0f}"
+                    if result.get("estimated_rent")
+                    else "Not available",
+                )
+
                 st.metric(
-                     "Gross Yield",
-                         f"{result.get('gross_yield'):.2f}%"
-                         if result.get("gross_yield")
-                         else "Not available"
-                         )
+                    "Gross Yield",
+                    f"{result.get('gross_yield'):.2f}%"
+                    if result.get("gross_yield")
+                    else "Not available",
+                )
+
                 st.metric(
                     "Net Yield",
                     f"{result.get('net_yield'):.2f}%"
                     if result.get("net_yield")
-                    else "Not available"
-                    )
-                
-            st.divider()
-            st.subheader("Why?")
-                
+                    else "Not available",
+                )
+
+                st.divider()
+
+                st.subheader("Why?")
+
                 for reason in result.get("score_reasons", []):
                     st.write(f"✓ {reason}")
-                                                    
+
             with st.expander("Raw extracted data"):
                 st.json(result)
 
         else:
             st.warning("Please paste a property URL.")
-
-
+            
 # -----------------------------
 # DATABASE
 # -----------------------------
