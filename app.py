@@ -2,6 +2,7 @@ import streamlit as st
 from PIL import Image
 from pathlib import Path
 
+from valuation.valuation_engine import evaluate_property
 from database.db_utils import get_dashboard_metrics, save_analyzed_property
 from scraper.dfimoveis import parse_dfimoveis_listing
 
@@ -87,6 +88,7 @@ elif page == "🔍 Property Analyzer":
 
             with st.spinner("Analyzing property..."):
                 result = parse_dfimoveis_listing(property_url)
+                result = evaluate_property(result)
 
             st.success("Property analyzed successfully!")
 
@@ -95,7 +97,7 @@ elif page == "🔍 Property Analyzer":
 
             st.subheader("Extracted Property Data")
 
-            col1, col2, col3, col4, col5, col6 = st.columns(6)
+            col1, col2, col3, col4, col5, col6, col7, col8, col9 = st.columns(9)
 
             listing_id = result.get("listing_id")
             asking_price = result.get("asking_price")
@@ -118,6 +120,10 @@ elif page == "🔍 Property Analyzer":
             
             col6.metric("Condo Fee", f"R$ {result.get('condo_fee'):,.0f}" if result.get("condo_fee") else "Not found")
             
+            col7.metric("Benchmark R$/m²", f"R$ {result.get('avg_price_m2'):,.0f}" if result.get("avg_price_m2") else "Not found")
+            col8.metric("Market Gap", f"{result.get('market_gap') * 100:.2f}%" if result.get("market_gap") is not None else "Not found")
+            col9.metric("Recommendation", result.get("recommendation"))
+
             st.write("Source:", result.get("source"))
             st.write("URL:", result.get("listing_url"))
             st.write("Page title:", result.get("page_title"))
