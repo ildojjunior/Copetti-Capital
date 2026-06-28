@@ -10,3 +10,4 @@ plotly
 folium
 sqlalchemy
 python-dotenv
+streamlit-folium
