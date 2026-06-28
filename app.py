@@ -99,33 +99,24 @@ elif page == "🔍 Property Analyzer":
 
             st.subheader("Extracted Property Data")
             
-            col1, col2, col3, col4, col5, col6, col7, col8, col9, col10 = st.columns(10)            
+            left_col, right_col = st.columns(2)
             
-            listing_id = result.get("listing_id")
-            asking_price = result.get("asking_price")
-            area_m2 = result.get("area_m2")
-
-            col1.metric("Listing ID", listing_id if listing_id else "Not found")
-
-            if asking_price is not None:
-                col2.metric("Asking Price", f"R$ {asking_price:,.0f}")
-            else:
-                col2.metric("Asking Price", "Not found")
-
-            if area_m2 is not None:
-                col3.metric("Area", f"{area_m2} m²")
-            else:
-                col3.metric("Area", "Not found")
-
-            col4.metric("Bedrooms", result.get("bedrooms"))
-            col5.metric("Neighborhood", result.get("neighborhood"))
+            with left_col:
+                st.subheader("Property Data")
+                st.metric("Listing ID", result.get("listing_id"))
+                st.metric("Asking Price", f"R$ {result.get('asking_price'):,.0f}" if result.get("asking_price") else "Not found")
+                st.metric("Area", f"{result.get('area_m2')} m²" if result.get("area_m2") else "Not found")
+                st.metric("Bedrooms", result.get("bedrooms"))
+                st.metric("Condo Fee", f"R$ {result.get('condo_fee'):,.0f}" if result.get("condo_fee") else "Not found")
+                st.metric("Neighborhood", result.get("neighborhood"))
             
-            col6.metric("Condo Fee", f"R$ {result.get('condo_fee'):,.0f}" if result.get("condo_fee") else "Not found")
-            
-            col7.metric("Benchmark R$/m²", f"R$ {result.get('avg_price_m2'):,.0f}" if result.get("avg_price_m2") else "Not found")
-            col8.metric("Market Gap", f"{result.get('market_gap') * 100:.2f}%" if result.get("market_gap") is not None else "Not found")
-            col9.metric("Recommendation", result.get("recommendation"))
-            col10.metric("Investment Score", f"{result.get('investment_score')}/100")
+            with right_col:
+                st.subheader("Investment Analysis")
+                st.metric("Investment Score", f"{result.get('investment_score')}/100")
+                st.metric("Recommendation", result.get("recommendation"))
+                st.metric("Price per m²", f"R$ {result.get('price_per_m2'):,.0f}" if result.get("price_per_m2") else "Not found")
+                st.metric("Benchmark R$/m²", f"R$ {result.get('avg_price_m2'):,.0f}" if result.get("avg_price_m2") else "Not found")
+                st.metric("Market Gap", f"{result.get('market_gap') * 100:.2f}%" if result.get("market_gap") is not None else "Not found")
 
             st.write("Source:", result.get("source"))
             st.write("URL:", result.get("listing_url"))
