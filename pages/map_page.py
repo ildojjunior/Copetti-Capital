@@ -10,7 +10,6 @@ def show_map_page():
     st.write("Map of analyzed properties.")
 
     properties = get_properties_dataframe()
-
     property_map = build_property_map(properties)
 
     st_folium(

@@ -46,7 +46,6 @@ def build_property_map(properties_df):
         return m
 
     location_reference = load_location_reference()
-    print(properties_df[["listing_id", "location_code"]])
 
     for _, row in properties_df.iterrows():
         location_code = row.get("location_code")
@@ -56,27 +55,56 @@ def build_property_map(properties_df):
 
         location_code = str(location_code).strip().upper()
         coords = location_reference.get(location_code)
-        
-        print("Location code:", location_code)
-        print("Coordinates:", coords)
-        
+
         if coords is None:
             continue
 
         lat, lon = coords
 
+        price = row.get("asking_price")
+        area = row.get("area_m2")
+        score = row.get("investment_score")
+        recommendation = row.get("recommendation")
+
+        price_text = f"R$ {price:,.0f}" if pd.notna(price) else "Not available"
+        area_text = f"{area:.1f} m²" if pd.notna(area) else "Not available"
+        score_text = f"{score:.0f}/100" if pd.notna(score) else "Not available"
+        recommendation_text = (
+            str(recommendation).upper()
+            if pd.notna(recommendation)
+            else "Not available"
+        )
+
         popup_text = f"""
         <b>Listing:</b> {row.get("listing_id")}<br>
         <b>Location:</b> {location_code}<br>
         <b>Neighborhood:</b> {row.get("neighborhood")}<br>
-        <b>Price:</b> R$ {row.get("asking_price")}<br>
-        <b>Score:</b> {row.get("investment_score")}<br>
-        <b>Recommendation:</b> {row.get("recommendation")}
+        <b>Price:</b> {price_text}<br>
+        <b>Area:</b> {area_text}<br>
+        <b>Score:</b> {score_text}<br>
+        <b>Recommendation:</b> {recommendation_text}
         """
+
+        recommendation_upper = recommendation_text.upper()
+
+        if recommendation_upper == "BUY":
+            color = "green"
+        elif recommendation_upper == "PASS":
+            color = "red"
+        elif recommendation_upper == "REVIEW":
+            color = "blue"
+        else:
+            color = "orange"
 
         folium.Marker(
             location=[lat, lon],
             popup=folium.Popup(popup_text, max_width=300),
+            tooltip=f"{location_code} | {price_text}",
+            icon=folium.Icon(
+                color=color,
+                icon="home",
+                prefix="fa",
+            ),
         ).add_to(m)
 
     return m
