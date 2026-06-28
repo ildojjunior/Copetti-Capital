@@ -102,7 +102,16 @@ elif page == "🔍 Property Analyzer":
             save_analyzed_property(result)
             st.info("Property saved to database.")
 
-            st.subheader("Extracted Property Data")
+            st.subheader("Investment Report")
+            st.info(
+                f"""
+                ### 🏠 Investment Decision
+                **{result.get("score_label")}**
+                **Investment Score:** {result.get("investment_score")}/100
+                **Recommendation:** {result.get("recommendation")}
+"""
+)
+
             st.markdown("### Executive Summary")
             st.markdown(summary)
             st.divider()
