@@ -20,9 +20,10 @@ def load_location_reference():
     reference = {}
 
     for _, row in df.iterrows():
-        reference[row["location_code"]] = [
-            row["latitude"],
-            row["longitude"],
+        code = str(row["location_code"]).strip().upper()
+        reference[code] = [
+            float(row["latitude"]),
+            float(row["longitude"]),
         ]
 
     return reference
@@ -49,6 +50,10 @@ def build_property_map(properties_df):
     for _, row in properties_df.iterrows():
         location_code = row.get("location_code")
 
+        if pd.isna(location_code):
+            continue
+
+        location_code = str(location_code).strip().upper()
         coords = location_reference.get(location_code)
 
         if coords is None:

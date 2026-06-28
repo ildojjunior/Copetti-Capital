@@ -18,5 +18,5 @@ def show_map_page():
 
     html(
         property_map._repr_html_(),
-        height=850,
+        height=1850,
     )
