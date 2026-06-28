@@ -45,7 +45,7 @@ def show_analyzer():
 
             st.subheader("Investment Report")
 
-            kpi1, kpi2, kpi3 = st.columns(3)
+            kpi1, kpi2, kpi3, kpi4 = st.columns(4)
 
             with kpi1:
                 st.metric(
@@ -70,6 +70,16 @@ def show_analyzer():
                     (
                         f"R$ {result.get('suggested_offer_price'):,.0f}"
                         if result.get("suggested_offer_price")
+                        else "Not available"
+                    ),
+                )
+            
+            with kpi4:
+                st.metric(
+                    "Weighted AVM",
+                    (
+                        f"R$ {result.get('weighted_fair_value'):,.0f}"
+                        if result.get("weighted_fair_value")
                         else "Not available"
                     ),
                 )
