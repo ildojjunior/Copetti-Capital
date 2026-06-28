@@ -104,7 +104,7 @@ elif page == "🔍 Property Analyzer":
             st.markdown("### Executive Summary")
             st.markdown(summary)
             st.divider()
-            
+
             left_col, right_col = st.columns(2)
             
             with left_col:
@@ -154,8 +154,7 @@ elif page == "🔍 Property Analyzer":
                     
                 st.write("Source:", result.get("source"))
                 st.write("URL:", result.get("listing_url"))
-                st.write("Page title:", result.get("page_title"))
-
+                
             with st.expander("Raw extracted data"):
                 st.json(result)
 
