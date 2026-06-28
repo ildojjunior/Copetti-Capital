@@ -15,7 +15,6 @@ st.set_page_config(
     layout="wide"
 )
 
-
 # -----------------------------
 # Load Logo
 # -----------------------------
@@ -152,6 +151,7 @@ elif page == "🗄️ Database":
             asking_price,
             condo_fee,
             area_m2,
+            rent_m2 AS price_per_m2,
             bedrooms,
             recommendation,
             status,

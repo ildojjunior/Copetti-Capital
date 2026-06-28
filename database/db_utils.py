@@ -62,12 +62,13 @@ def save_analyzed_property(result: dict):
     asking_price,
     condo_fee,
     area_m2,
+    rent_m2,
     bedrooms,
     status,
     recommendation
     )
        
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
     str(uuid.uuid4()),
@@ -81,6 +82,7 @@ def save_analyzed_property(result: dict):
     result.get("asking_price"),
     result.get("condo_fee"),
     result.get("area_m2"),
+    result.get("price_per_m2"),
     result.get("bedrooms"),
     "analyzed",
     "negotiate",

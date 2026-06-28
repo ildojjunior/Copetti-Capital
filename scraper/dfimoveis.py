@@ -78,6 +78,12 @@ def parse_condo_fee(html: str):
 
     return None
 
+def calculate_price_per_m2(asking_price, area_m2):
+    if asking_price and area_m2 and area_m2 > 0:
+        return round(asking_price / area_m2, 2)
+
+    return None
+
 def parse_dfimoveis_listing(url: str) -> dict:
     html = fetch_page(url)
     soup = BeautifulSoup(html, "lxml")
@@ -92,6 +98,7 @@ def parse_dfimoveis_listing(url: str) -> dict:
         "asking_price": parse_price(soup),
         "condo_fee": parse_condo_fee(html),
         "area_m2": parse_area(soup),
+        "price_per_m2": calculate_price_per_m2(parse_price(soup), parse_area(soup)),
         "bedrooms": clean_number(parse_data_attribute(soup, "data-quartos")),
         "property_type": parse_data_attribute(soup, "data-tipo"),
         "property_subtype": parse_data_attribute(soup, "data-subtipo"),
