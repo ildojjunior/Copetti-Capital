@@ -113,18 +113,31 @@ elif page == "🔍 Property Analyzer":
             with right_col:
     st.subheader("Investment Analysis")
 
-    st.metric("Investment Score", f"{result.get('investment_score')}/100")
+    st.metric(
+        "Investment Score",
+        f"{result.get('investment_score')}/100"
+    )
     st.markdown(f"**{result.get('score_label')}**")
 
-    st.metric("Recommendation", result.get("recommendation"))
+    st.metric(
+        "Recommendation",
+        result.get("recommendation")
+    )
+
     st.metric(
         "Price per m²",
-        f"R$ {result.get('price_per_m2'):,.0f}" if result.get("price_per_m2") else "Not found"
+        f"R$ {result.get('price_per_m2'):,.0f}"
+        if result.get("price_per_m2")
+        else "Not found"
     )
+
     st.metric(
         "Benchmark R$/m²",
-        f"R$ {result.get('avg_price_m2'):,.0f}" if result.get("avg_price_m2") else "Not found"
+        f"R$ {result.get('avg_price_m2'):,.0f}"
+        if result.get("avg_price_m2")
+        else "Not found"
     )
+
     st.metric(
         "Market Gap",
         f"{result.get('market_gap') * 100:.2f}%"
