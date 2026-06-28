@@ -14,16 +14,13 @@ from valuation.comparables import (
 
 
 def show_analyzer():
-
     st.title("🔍 Property Analyzer")
     st.write("Paste a DFImóveis or Wimoveis property URL.")
 
     property_url = st.text_input("Property URL")
 
     if st.button("Analyze Property"):
-
         if property_url:
-
             with st.spinner("Analyzing property..."):
                 result = parse_dfimoveis_listing(property_url)
                 result = evaluate_property(result)
@@ -122,10 +119,7 @@ def show_analyzer():
             with right_col:
                 st.subheader("Investment Analysis")
 
-                st.metric(
-                    "Recommendation",
-                    result.get("recommendation"),
-                )
+                st.metric("Recommendation", result.get("recommendation"))
 
                 st.metric(
                     "Market Gap",
@@ -197,7 +191,6 @@ def show_analyzer():
 
             if comparable_summary["comparable_count"] == 0:
                 st.info("No comparable properties found yet.")
-
             else:
                 c1, c2, c3 = st.columns(3)
 
@@ -217,26 +210,26 @@ def show_analyzer():
                 )
 
                 display_comparables = comparables[
-    [
-        "listing_id",
-        "neighborhood",
-        "asking_price",
-        "area_m2",
-        "price_per_m2",
-        "similarity_score",
-    ]
-].rename(
-    columns={
-        "listing_id": "Listing ID",
-        "neighborhood": "Neighborhood",
-        "asking_price": "Asking Price",
-        "area_m2": "Area m²",
-        "price_per_m2": "Price/m²",
-        "similarity_score": "Similarity",
-    }
-)
+                    [
+                        "listing_id",
+                        "neighborhood",
+                        "asking_price",
+                        "area_m2",
+                        "price_per_m2",
+                        "similarity_score",
+                    ]
+                ].rename(
+                    columns={
+                        "listing_id": "Listing ID",
+                        "neighborhood": "Neighborhood",
+                        "asking_price": "Asking Price",
+                        "area_m2": "Area m²",
+                        "price_per_m2": "Price/m²",
+                        "similarity_score": "Similarity",
+                    }
+                )
 
-st.dataframe(display_comparables, use_container_width=True)
+                st.dataframe(display_comparables, use_container_width=True)
 
             with st.expander("Raw extracted data"):
                 st.json(result)
