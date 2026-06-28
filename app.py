@@ -7,6 +7,7 @@ from database.db_utils import get_dashboard_metrics, save_analyzed_property
 from scraper.dfimoveis import parse_dfimoveis_listing
 from valuation.market_intelligence import get_market_benchmarks
 from scoring.investment_score import calculate_investment_score
+from reports.investment_summary import generate_investment_summary
 
 # -----------------------------
 # Page Configuration
@@ -91,6 +92,8 @@ elif page == "🔍 Property Analyzer":
                 result = parse_dfimoveis_listing(property_url)
                 result = evaluate_property(result)
                 result = calculate_investment_score(result)
+                
+                summary = generate_investment_summary(result)
 
             st.success("Property analyzed successfully!")
 
@@ -98,6 +101,9 @@ elif page == "🔍 Property Analyzer":
             st.info("Property saved to database.")
 
             st.subheader("Extracted Property Data")
+            st.markdown("### Executive Summary")
+            st.markdown(summary)
+            st.divider()
             
             left_col, right_col = st.columns(2)
             
