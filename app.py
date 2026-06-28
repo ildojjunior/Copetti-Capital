@@ -120,6 +120,10 @@ elif page == "🔍 Property Analyzer":
                  st.metric("Price per m²", f"R$ {result.get('price_per_m2'):,.0f}" if result.get("price_per_m2") else "Not found")
                  st.metric("Benchmark R$/m²", f"R$ {result.get('avg_price_m2'):,.0f}" if result.get("avg_price_m2") else "Not found")
                  st.metric("Market Gap", f"{result.get('market_gap') * 100:.2f}%" if result.get("market_gap") is not None else "Not found")
+                 st.markdown("### Why?")
+                 
+                 for reason in result.get("score_reasons", []):
+                 st.write(f"✓ {reason}")
 
             st.write("Source:", result.get("source"))
             st.write("URL:", result.get("listing_url"))
