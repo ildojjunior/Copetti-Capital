@@ -1,17 +1,40 @@
 import sqlite3
+
 import pandas as pd
 
 from config import DATABASE_FILE
 
 
+def calculate_similarity_score(target: dict, comparable: dict):
+    """
+    Calculates a simple similarity score between the target property
+    and a comparable property.
+    """
+
+    score = 100
+
+    target_area = target.get("area_m2")
+    comparable_area = comparable.get("area_m2")
+
+    if target_area and comparable_area:
+        area_difference = abs(target_area - comparable_area) / target_area
+        score -= area_difference * 100
+
+    target_bedrooms = target.get("bedrooms")
+    comparable_bedrooms = comparable.get("bedrooms")
+
+    if target_bedrooms is not None and comparable_bedrooms is not None:
+        if target_bedrooms != comparable_bedrooms:
+            score -= 15
+
+    score = max(0, min(score, 100))
+
+    return round(score, 1)
+
+
 def find_comparable_properties(result: dict, max_results: int = 10):
     """
     Finds comparable properties from the existing database.
-
-    Version 1:
-    - Same neighborhood
-    - Similar area within +/- 20%
-    - Must have price per m²
     """
 
     neighborhood = result.get("neighborhood")
@@ -53,7 +76,18 @@ def find_comparable_properties(result: dict, max_results: int = 10):
 
     conn.close()
 
+    if df.empty:
+        return df
+
+    df["similarity_score"] = df.apply(
+        lambda row: calculate_similarity_score(result, row.to_dict()),
+        axis=1,
+    )
+
+    df = df.sort_values("similarity_score", ascending=False)
+
     return df
+
 
 def summarize_comparables(comparables: pd.DataFrame):
     """
