@@ -8,6 +8,7 @@ from scraper.dfimoveis import parse_dfimoveis_listing
 from valuation.market_intelligence import get_market_benchmarks
 from scoring.investment_score import calculate_investment_score
 from reports.investment_summary import generate_investment_summary
+from valuation.fair_value import estimate_fair_value
 
 # -----------------------------
 # Page Configuration
@@ -91,6 +92,7 @@ elif page == "🔍 Property Analyzer":
             with st.spinner("Analyzing property..."):
                 result = parse_dfimoveis_listing(property_url)
                 result = evaluate_property(result)
+                result = estimate_fair_value(result)
                 result = calculate_investment_score(result)
                 
                 summary = generate_investment_summary(result)
@@ -115,46 +117,69 @@ elif page == "🔍 Property Analyzer":
                 st.metric("Bedrooms", result.get("bedrooms"))
                 st.metric("Condo Fee", f"R$ {result.get('condo_fee'):,.0f}" if result.get("condo_fee") else "Not found")
                 st.metric("Neighborhood", result.get("neighborhood"))
+                
+                st.write("Source:", result.get("source"))
+                st.write("URL:", result.get("listing_url"))
             
             with right_col:
+                
                 st.subheader("Investment Analysis")
+                
                 st.metric(
                     "Investment Score",
                     f"{result.get('investment_score')}/100"
                     )
                 
-                st.markdown(f"**{result.get('score_label')}**")
+                st.markdown(f"### {result.get('score_label')}")
+                
                 st.metric(
                     "Recommendation",
                     result.get("recommendation")
+                    )
+                
+                st.divider()
+                
+                st.metric(
+                    "Estimated Fair Value",
+                    f"R$ {result.get('estimated_fair_value'):,.0f}"
+                    if result.get("estimated_fair_value")
+                    else "Not available"
+                    )
+                
+                st.metric(
+                    "Suggested Offer",
+                    f"R$ {result.get('suggested_offer_price'):,.0f}"
+                    if result.get("suggested_offer_price")
+                    else "Not available"
+                    )
+                
+                st.metric(
+                    "Market Gap",
+                    f"{result.get('market_gap')*100:.2f}%"
+                    if result.get("market_gap") is not None
+                    else "Not available"
                     )
                 
                 st.metric(
                     "Price per m²",
                     f"R$ {result.get('price_per_m2'):,.0f}"
                     if result.get("price_per_m2")
-                    else "Not found"
+                    else "Not available"
                     )
+                
                 st.metric(
-                    "Benchmark R$/m²",
+                    "Neighborhood Benchmark",
                     f"R$ {result.get('avg_price_m2'):,.0f}"
                     if result.get("avg_price_m2")
-                    else "Not found"
+                    else "Not available"
                     )
-                st.metric(
-                    "Market Gap",
-                    f"{result.get('market_gap') * 100:.2f}%"
-                    if result.get("market_gap") is not None
-                    else "Not found"
-                    )
-
-                st.markdown("### Why?")
+                
+                st.divider()
+                st.subheader("Why?")
+                
                 for reason in result.get("score_reasons", []):
                     st.write(f"✓ {reason}")
-                    
-                st.write("Source:", result.get("source"))
-                st.write("URL:", result.get("listing_url"))
-                
+                                                    
             with st.expander("Raw extracted data"):
                 st.json(result)
 
