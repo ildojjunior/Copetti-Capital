@@ -9,6 +9,7 @@ from valuation.market_intelligence import get_market_benchmarks
 from scoring.investment_score import calculate_investment_score
 from reports.investment_summary import generate_investment_summary
 from valuation.fair_value import estimate_fair_value
+from finance.investment_metrics import calculate_investment_metrics
 
 # -----------------------------
 # Page Configuration
@@ -93,6 +94,7 @@ elif page == "🔍 Property Analyzer":
                 result = parse_dfimoveis_listing(property_url)
                 result = evaluate_property(result)
                 result = estimate_fair_value(result)
+                result = calculate_investment_metrics(result)
                 result = calculate_investment_score(result)
                 
                 summary = generate_investment_summary(result)
@@ -103,20 +105,43 @@ elif page == "🔍 Property Analyzer":
             st.info("Property saved to database.")
 
             st.subheader("Investment Report")
-            st.info(
-                f"""
-                ### 🏠 Investment Decision
-                **{result.get("score_label")}**
-                **Investment Score:** {result.get("investment_score")}/100
-                **Recommendation:** {result.get("recommendation")}
-"""
-)
+            
+            # ============================================
+            # Executive Dashboard
+            # ============================================
 
-            st.markdown("### Executive Summary")
-            st.markdown(summary)
-            st.divider()
+             kpi1, kpi2, kpi3 = st.columns(3)
+            
+            with kpi1:
+                 st.metric(
+                      "Investment Score",
+                      f"{result.get('investment_score')}/100",
+                      result.get("score_label"),
+                      )
+            
+            with kpi2:
+                 st.metric(
+                      "Estimated Fair Value",
+                      f"R$ {result.get('estimated_fair_value'):,.0f}"
+                      if result.get("estimated_fair_value")
+                      else "Not available",
+                      )
+            
+             with kpi3:
+                 st.metric(
+                      "Suggested Offer",
+                      f"R$ {result.get('suggested_offer_price'):,.0f}"
+                      if result.get("suggested_offer_price")
+                      else "Not available",
+                      )
 
-            left_col, right_col = st.columns(2)
+             st.divider()
+
+             st.markdown("### Executive Summary")
+             st.markdown(summary)
+             st.divider()
+
+             left_col, right_col = st.columns(2)
             
             with left_col:
                 st.subheader("Property Data")
@@ -184,7 +209,30 @@ elif page == "🔍 Property Analyzer":
                     )
                 
                 st.divider()
-                st.subheader("Why?")
+                
+                st.subheader("Rental Analysis")
+                
+                st.metric(
+                     "Estimated Rent",
+                     f"R$ {result.get('estimated_rent'):,.0f}"
+                     if result.get("estimated_rent")
+                     else "Not available"
+                     )
+                st.metric(
+                     "Gross Yield",
+                         f"{result.get('gross_yield'):.2f}%"
+                         if result.get("gross_yield")
+                         else "Not available"
+                         )
+                st.metric(
+                    "Net Yield",
+                    f"{result.get('net_yield'):.2f}%"
+                    if result.get("net_yield")
+                    else "Not available"
+                    )
+                
+            st.divider()
+            st.subheader("Why?")
                 
                 for reason in result.get("score_reasons", []):
                     st.write(f"✓ {reason}")
