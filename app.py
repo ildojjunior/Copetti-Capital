@@ -96,7 +96,7 @@ elif page == "🔍 Property Analyzer":
 
             st.subheader("Extracted Property Data")
 
-            col1, col2, col3 = st.columns(3)
+            col1, col2, col3, col4, col5 = st.columns(5)
 
             listing_id = result.get("listing_id")
             asking_price = result.get("asking_price")
@@ -113,6 +113,9 @@ elif page == "🔍 Property Analyzer":
                 col3.metric("Area", f"{area_m2} m²")
             else:
                 col3.metric("Area", "Not found")
+
+            col4.metric("Bedrooms", result.get("bedrooms"))
+            col5.metric("Neighborhood", result.get("neighborhood"))
 
             st.write("Source:", result.get("source"))
             st.write("URL:", result.get("listing_url"))
