@@ -146,9 +146,9 @@ elif page == "🔍 Property Analyzer":
                 for reason in result.get("score_reasons", []):
                     st.write(f"✓ {reason}")
                     
-                    st.write("Source:", result.get("source"))
-                    st.write("URL:", result.get("listing_url"))
-                    st.write("Page title:", result.get("page_title"))
+                st.write("Source:", result.get("source"))
+                st.write("URL:", result.get("listing_url"))
+                st.write("Page title:", result.get("page_title"))
 
             with st.expander("Raw extracted data"):
                 st.json(result)
