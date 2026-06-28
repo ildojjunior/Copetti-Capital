@@ -216,7 +216,27 @@ def show_analyzer():
                     f"R$ {comparable_summary['comparable_median_price_m2']:,.0f}",
                 )
 
-                st.dataframe(comparables, use_container_width=True)
+                display_comparables = comparables[
+    [
+        "listing_id",
+        "neighborhood",
+        "asking_price",
+        "area_m2",
+        "price_per_m2",
+        "similarity_score",
+    ]
+].rename(
+    columns={
+        "listing_id": "Listing ID",
+        "neighborhood": "Neighborhood",
+        "asking_price": "Asking Price",
+        "area_m2": "Area m²",
+        "price_per_m2": "Price/m²",
+        "similarity_score": "Similarity",
+    }
+)
+
+st.dataframe(display_comparables, use_container_width=True)
 
             with st.expander("Raw extracted data"):
                 st.json(result)
