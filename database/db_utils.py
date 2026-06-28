@@ -39,3 +39,34 @@ def get_dashboard_metrics():
         "pass_count": (recommendation == "pass").sum()
 
     }
+
+def save_analyzed_property(result: dict):
+    conn = sqlite3.connect(DATABASE_FILE)
+    cursor = conn.cursor()
+
+    cursor.execute(
+        """
+        INSERT INTO properties (
+            source,
+            listing_id,
+            url,
+            asking_price,
+            area_m2,
+            status,
+            recommendation
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """,
+        (
+            result.get("source"),
+            result.get("listing_id"),
+            result.get("listing_url"),
+            result.get("asking_price"),
+            result.get("area_m2"),
+            "analyzed",
+            "negotiate",
+        ),
+    )
+
+    conn.commit()
+    conn.close()

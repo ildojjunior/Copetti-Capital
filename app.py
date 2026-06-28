@@ -1,7 +1,10 @@
 import streamlit as st
 from PIL import Image
 from pathlib import Path
-from database.db_utils import get_dashboard_metrics
+
+from database.db_utils import get_dashboard_metrics, save_analyzed_property
+from scraper.dfimoveis import parse_dfimoveis_listing
+
 
 # -----------------------------
 # Page Configuration
@@ -12,6 +15,7 @@ st.set_page_config(
     layout="wide"
 )
 
+
 # -----------------------------
 # Load Logo
 # -----------------------------
@@ -21,6 +25,7 @@ if logo_path.exists():
     logo = Image.open(logo_path)
 else:
     logo = None
+
 
 # -----------------------------
 # Sidebar
@@ -39,13 +44,11 @@ page = st.sidebar.radio(
         "🔍 Property Analyzer",
         "🗄️ Database",
         "🗺️ Map",
-        "💼 Portfolio"
-    ]
+        "💼 Portfolio",
+    ],
 )
 
-# -----------------------------
-# Header
-# -----------------------------
+
 # -----------------------------
 # DASHBOARD
 # -----------------------------
@@ -55,9 +58,9 @@ if page == "🏠 Dashboard":
     st.subheader("Real Estate Investment Intelligence")
 
     metrics = get_dashboard_metrics()
-    
+
     c1, c2, c3, c4 = st.columns(4)
-    
+
     c1.metric("Properties", metrics["total_properties"])
     c2.metric("BUY", metrics["buy_count"])
     c3.metric("NEGOTIATE", metrics["negotiate_count"])
@@ -67,6 +70,7 @@ if page == "🏠 Dashboard":
 
     st.header("Today's Market")
     st.info("No market scan has been performed yet.")
+
 
 # -----------------------------
 # PROPERTY ANALYZER
@@ -81,11 +85,45 @@ elif page == "🔍 Property Analyzer":
     if st.button("Analyze Property"):
 
         if property_url:
-            st.success("Property received!")
-            st.write(property_url)
+
+            with st.spinner("Analyzing property..."):
+                result = parse_dfimoveis_listing(property_url)
+
+            st.success("Property analyzed successfully!")
+            
+            save_analyzed_property(result)
+            st.info("Property saved to database.")
+
+            st.subheader("Extracted Property Data")
+
+            col1, col2, col3 = st.columns(3)
+
+            listing_id = result.get("listing_id")
+            asking_price = result.get("asking_price")
+            area_m2 = result.get("area_m2")
+
+            col1.metric("Listing ID", listing_id if listing_id else "Not found")
+
+            if asking_price is not None:
+                col2.metric("Asking Price", f"R$ {asking_price:,.0f}")
+            else:
+                col2.metric("Asking Price", "Not found")
+
+            if area_m2 is not None:
+                col3.metric("Area", f"{area_m2} m²")
+            else:
+                col3.metric("Area", "Not found")
+
+            st.write("Source:", result.get("source"))
+            st.write("URL:", result.get("listing_url"))
+            st.write("Page title:", result.get("page_title"))
+
+            with st.expander("Raw extracted data"):
+                st.json(result)
 
         else:
             st.warning("Please paste a property URL.")
+
 
 # -----------------------------
 # DATABASE
@@ -95,6 +133,7 @@ elif page == "🗄️ Database":
     st.title("🗄️ Property Database")
     st.info("Database viewer coming soon.")
 
+
 # -----------------------------
 # MAP
 # -----------------------------
@@ -102,6 +141,7 @@ elif page == "🗺️ Map":
 
     st.title("🗺️ Investment Map")
     st.info("Interactive map coming soon.")
+
 
 # -----------------------------
 # PORTFOLIO
