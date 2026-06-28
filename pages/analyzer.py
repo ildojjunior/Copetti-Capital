@@ -7,7 +7,10 @@ from valuation.fair_value import estimate_fair_value
 from finance.investment_metrics import calculate_investment_metrics
 from scoring.investment_score import calculate_investment_score
 from reports.investment_summary import generate_investment_summary
-
+from valuation.comparables import (
+    find_comparable_properties,
+    summarize_comparables,
+)
 
 def show_analyzer():
 
@@ -26,6 +29,10 @@ def show_analyzer():
                 result = estimate_fair_value(result)
                 result = calculate_investment_metrics(result)
                 result = calculate_investment_score(result)
+                
+                comparables = find_comparable_properties(result)
+                comparable_summary = summarize_comparables(comparables)
+                
                 summary = generate_investment_summary(result)
 
             st.success("Property analyzed successfully!")
@@ -161,9 +168,26 @@ def show_analyzer():
 
                 for reason in result.get("score_reasons", []):
                     st.write(f"✓ {reason}")
-
-            with st.expander("Raw extracted data"):
+            
+            st.divider()
+            st.subheader("Comparable Properties")
+            if comparable_summary["comparable_count"] == 0:
+                 st.info("No comparable properties found yet.")
+                 else:
+                 c1, c2, c3 = st.columns(3)
+                 c1.metric("Comparables Found", comparable_summary["comparable_count"])
+                 c2.metric(
+                      "Average Price/m²",
+                      f"R$ {comparable_summary['comparable_avg_price_m2']:,.0f}",
+                      )
+                 c3.metric(
+                      "Median Price/m²",
+                      f"R$ {comparable_summary['comparable_median_price_m2']:,.0f}",
+                      )
+                 st.dataframe(comparables, use_container_width=True)
+                 
+             with st.expander("Raw extracted data"):
                 st.json(result)
-
+        
         else:
             st.warning("Please paste a property URL.")
