@@ -62,6 +62,13 @@ def parse_area(soup: BeautifulSoup):
 
     return None
 
+def parse_data_attribute(soup: BeautifulSoup, attribute_name: str):
+    tag = soup.find(attrs={attribute_name: True})
+
+    if tag:
+        return tag.get(attribute_name)
+
+    return None
 
 def parse_dfimoveis_listing(url: str) -> dict:
     html = fetch_page(url)
@@ -76,5 +83,10 @@ def parse_dfimoveis_listing(url: str) -> dict:
         "page_title": page_title,
         "asking_price": parse_price(soup),
         "area_m2": parse_area(soup),
+        "bedrooms": clean_number(parse_data_attribute(soup, "data-quartos")),
+        "neighborhood": parse_data_attribute(soup, "data-bairro"),
+        "cep_partial": parse_data_attribute(soup, "data-cepparcial"),
+        "city": parse_data_attribute(soup, "data-cidade"),
+        "uf": parse_data_attribute(soup, "data-uf"),
         "html_length": len(html),
     }

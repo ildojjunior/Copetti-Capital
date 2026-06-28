@@ -142,8 +142,11 @@ elif page == "🗄 Database":
         SELECT
             listing_id,
             source,
+            neighborhood,
+            cep,
             asking_price,
             area_m2,
+            bedrooms,
             recommendation,
             status,
             date_collected

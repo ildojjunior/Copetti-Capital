@@ -51,31 +51,38 @@ def save_analyzed_property(result: dict):
     cursor.execute(
         """
         INSERT INTO properties (
-            property_id,
-            source,
-            listing_id,
-            listing_url,
-            date_collected,
-            last_updated,
-            asking_price,
-            area_m2,
-            status,
-            recommendation
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    property_id,
+    source,
+    listing_id,
+    listing_url,
+    date_collected,
+    last_updated,
+    neighborhood,
+    cep,
+    asking_price,
+    area_m2,
+    bedrooms,
+    status,
+    recommendation
+    )
+       
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
-            str(uuid.uuid4()),
-            result.get("source"),
-            result.get("listing_id"),
-            result.get("listing_url"),
-            now,
-            now,
-            result.get("asking_price"),
-            result.get("area_m2"),
-            "analyzed",
-            "negotiate",
-        ),
+    str(uuid.uuid4()),
+    result.get("source"),
+    result.get("listing_id"),
+    result.get("listing_url"),
+    now,
+    now,
+    result.get("neighborhood"),
+    result.get("cep_partial"),
+    result.get("asking_price"),
+    result.get("area_m2"),
+    result.get("bedrooms"),
+    "analyzed",
+    "negotiate",
+),
     )
 
     conn.commit()
