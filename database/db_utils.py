@@ -1,6 +1,8 @@
 import sqlite3
 import pandas as pd
+import uuid 
 
+from datetime import datetime
 from config import DATABASE_FILE
 
 
@@ -44,23 +46,31 @@ def save_analyzed_property(result: dict):
     conn = sqlite3.connect(DATABASE_FILE)
     cursor = conn.cursor()
 
+    now = datetime.now().isoformat(timespec="seconds")
+
     cursor.execute(
         """
         INSERT INTO properties (
+            property_id,
             source,
             listing_id,
-            url,
+            listing_url,
+            date_collected,
+            last_updated,
             asking_price,
             area_m2,
             status,
             recommendation
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """,
         (
+            str(uuid.uuid4()),
             result.get("source"),
             result.get("listing_id"),
             result.get("listing_url"),
+            now,
+            now,
             result.get("asking_price"),
             result.get("area_m2"),
             "analyzed",

@@ -90,7 +90,7 @@ elif page == "🔍 Property Analyzer":
                 result = parse_dfimoveis_listing(property_url)
 
             st.success("Property analyzed successfully!")
-            
+
             save_analyzed_property(result)
             st.info("Property saved to database.")
 
@@ -128,11 +128,34 @@ elif page == "🔍 Property Analyzer":
 # -----------------------------
 # DATABASE
 # -----------------------------
-elif page == "🗄️ Database":
+elif page == "🗄 Database":
 
-    st.title("🗄️ Property Database")
-    st.info("Database viewer coming soon.")
+    st.title("🗄 Property Database")
 
+    import sqlite3
+    import pandas as pd
+
+    conn = sqlite3.connect("data/copetti_capital.db")
+
+    df = pd.read_sql_query(
+        """
+        SELECT
+            listing_id,
+            source,
+            asking_price,
+            area_m2,
+            recommendation,
+            status,
+            date_collected
+        FROM properties
+        ORDER BY date_collected DESC
+        """,
+        conn,
+    )
+
+    conn.close()
+
+    st.dataframe(df, use_container_width=True)
 
 # -----------------------------
 # MAP
