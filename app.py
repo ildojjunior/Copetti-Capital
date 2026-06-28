@@ -79,25 +79,28 @@ elif page == "🗄️ Database":
     conn = sqlite3.connect("data/copetti_capital.db")
 
     df = pd.read_sql_query(
-        """
-        SELECT
-            listing_id,
-            source,
-            neighborhood,
-            cep,
-            asking_price,
-            condo_fee,
-            area_m2,
-            rent_m2 AS price_per_m2,
-            bedrooms,
-            recommendation,
-            status,
-            date_collected
-        FROM properties
-        ORDER BY date_collected DESC
-        """,
-        conn,
-    )
+    """
+    SELECT
+        listing_id,
+        neighborhood,
+        asking_price,
+        area_m2,
+        bedrooms,
+        floor,
+        condo_fee,
+        iptu,
+        estimated_fair_value,
+        expected_rent,
+        gross_yield,
+        net_yield,
+        investment_score,
+        recommendation,
+        date_collected
+    FROM properties
+    ORDER BY date_collected DESC
+    """,
+    conn,
+)
 
     conn.close()
 
