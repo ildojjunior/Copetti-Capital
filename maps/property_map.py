@@ -135,7 +135,7 @@ def build_property_map(properties_df):
             icon = "search"
 
         else:
-            color = "gray"
+            color = "orange"
             icon = "circle"
 
         ########################################
