@@ -13,6 +13,7 @@ from finance.investment_metrics import calculate_investment_metrics
 from pages.dashboard import show_dashboard
 from pages.analyzer import show_analyzer
 from pages.map_page import show_map_page
+from pages.scraper_page import show_scraper_page
 from pages.database_page import show_database_page
 
 # -----------------------------
@@ -48,6 +49,7 @@ page = st.sidebar.radio(
     [
         "🏠 Dashboard",
         "🔍 Property Analyzer",
+        "🌐 Market Scraper",
         "🗄️ Database",
         "📊 Market Intelligence",
         "🗺️ Map",
@@ -69,11 +71,18 @@ elif page == "🔍 Property Analyzer":
     show_analyzer()
 
 # -----------------------------
+# Market Scraper
+# -----------------------------
+
+elif page == "🌐 Market Scraper":
+    show_scraper_page()
+
+# -----------------------------
 # DATABASE
 # -----------------------------
 elif page == "🗄️ Database":
     show_database_page()
-    
+
 # -----------------------------
 # MARKET INTELLIGENCE
 # -----------------------------
