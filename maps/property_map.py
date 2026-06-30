@@ -178,7 +178,12 @@ def build_property_map(properties_df):
 
         folium.CircleMarker(
             location=[lat, lon],
-            radius=9,
+            score = row.get("investment_score")
+            
+            if pd.notna(score):
+                radius = max(6, min(18, score / 6))
+            else:
+                radius = 6
             tooltip=f"{location_code} • {price_text}",
             popup=folium.Popup(popup_html, max_width=320),
             color=color,
