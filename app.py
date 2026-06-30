@@ -13,6 +13,7 @@ from finance.investment_metrics import calculate_investment_metrics
 from pages.dashboard import show_dashboard
 from pages.analyzer import show_analyzer
 from pages.map_page import show_map_page
+from pages.database_page import show_database_page
 
 # -----------------------------
 # Page Configuration
@@ -71,42 +72,8 @@ elif page == "🔍 Property Analyzer":
 # DATABASE
 # -----------------------------
 elif page == "🗄️ Database":
-
-    st.title("🗄️ Property Database")
-
-    import sqlite3
-    import pandas as pd
-
-    conn = sqlite3.connect("data/copetti_capital.db")
-
-    df = pd.read_sql_query(
-    """
-    SELECT
-        listing_id,
-        neighborhood,
-        asking_price,
-        area_m2,
-        bedrooms,
-        floor,
-        condo_fee,
-        iptu,
-        estimated_fair_value,
-        expected_rent,
-        gross_yield,
-        net_yield,
-        investment_score,
-        recommendation,
-        date_collected
-    FROM properties
-    ORDER BY date_collected DESC
-    """,
-    conn,
-)
-
-    conn.close()
-
-    st.dataframe(df, use_container_width=True)
-
+    show_database_page()
+    
 # -----------------------------
 # MARKET INTELLIGENCE
 # -----------------------------

@@ -1,17 +1,16 @@
 import folium
 import pandas as pd
+
 from pathlib import Path
 from folium.plugins import MarkerCluster
 
+
 LOCATION_REFERENCE_FILE = Path("reference_data/brasilia_locations.csv")
+
 
 def load_location_reference():
     """
-    Loads coordinates for Brasília location codes.
-    Example:
-        CLN213
-        SGAN911
-        CRNW510
+    Loads the Brasília location reference database.
     """
 
     if not LOCATION_REFERENCE_FILE.exists():
@@ -34,7 +33,7 @@ def load_location_reference():
 
 def build_property_map(properties_df):
     """
-    Builds an interactive investment map.
+    Builds the interactive investment map.
     """
 
     # Brasília center
@@ -53,6 +52,10 @@ def build_property_map(properties_df):
 
     for _, row in properties_df.iterrows():
 
+        ####################################
+        # Coordinates
+        ####################################
+
         location_code = row.get("location_code")
 
         if pd.isna(location_code):
@@ -67,9 +70,9 @@ def build_property_map(properties_df):
 
         lat, lon = coords
 
-        ########################################
+        ####################################
         # Property information
-        ########################################
+        ####################################
 
         price = row.get("asking_price")
         area = row.get("area_m2")
@@ -77,6 +80,44 @@ def build_property_map(properties_df):
         recommendation = row.get("recommendation")
         gross_yield = row.get("gross_yield")
         fair_value = row.get("estimated_fair_value")
+
+        recommendation_text = (
+            str(recommendation).strip().upper()
+            if pd.notna(recommendation)
+            else "UNKNOWN"
+        )
+
+        ####################################
+        # Marker color
+        ####################################
+
+        if recommendation_text == "BUY":
+            color = "green"
+
+        elif recommendation_text == "NEGOTIATE":
+            color = "orange"
+
+        elif recommendation_text == "REVIEW":
+            color = "orange"
+
+        elif recommendation_text == "PASS":
+            color = "red"
+
+        else:
+            color = "gray"
+
+        ####################################
+        # Marker size
+        ####################################
+
+        if pd.notna(score):
+            radius = max(6, min(18, score / 6))
+        else:
+            radius = 6
+
+        ####################################
+        # Formatting
+        ####################################
 
         price_text = (
             f"R$ {price:,.0f}"
@@ -96,51 +137,21 @@ def build_property_map(properties_df):
             else "Not available"
         )
 
-        score_text = (
-            f"{score:.0f}/100"
-            if pd.notna(score)
-            else "Not available"
-        )
-
         yield_text = (
             f"{gross_yield:.2f}%"
             if pd.notna(gross_yield)
             else "Not available"
         )
 
-        recommendation_text = (
-            str(recommendation).upper()
-            if pd.notna(recommendation)
-            else "UNKNOWN"
+        score_text = (
+            f"{score:.0f}/100"
+            if pd.notna(score)
+            else "Not available"
         )
 
-        ########################################
-        # Marker colors
-        ########################################
-
-        if recommendation_text == "BUY":
-            color = "green"
-            icon = "thumbs-up"
-
-        elif recommendation_text == "NEGOTIATE":
-            color = "orange"
-            icon = "handshake"
-
-        elif recommendation_text == "PASS":
-            color = "red"
-            icon = "times-circle"
-
-        elif recommendation_text == "REVIEW":
-            color = "blue"
-            icon = "search"
-
-        else:
-            color = "orange"
-            icon = "circle"
-
-        ########################################
+        ####################################
         # Popup
-        ########################################
+        ####################################
 
         popup_html = f"""
         <div style="width:260px">
@@ -172,24 +183,20 @@ def build_property_map(properties_df):
         </div>
         """
 
-        ########################################
-        # Marker
-        ########################################
+        ####################################
+        # Circle marker
+        ####################################
 
         folium.CircleMarker(
             location=[lat, lon],
-            score = row.get("investment_score")
-            
-            if pd.notna(score):
-                radius = max(6, min(18, score / 6))
-            else:
-                radius = 6
-            tooltip=f"{location_code} • {price_text}",
-            popup=folium.Popup(popup_html, max_width=320),
+            radius=radius,
             color=color,
             fill=True,
             fill_color=color,
             fill_opacity=0.85,
+            weight=2,
+            tooltip=f"{location_code} • {price_text}",
+            popup=folium.Popup(popup_html, max_width=320),
         ).add_to(marker_cluster)
 
     return m
