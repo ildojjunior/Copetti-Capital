@@ -176,15 +176,15 @@ def build_property_map(properties_df):
         # Marker
         ########################################
 
-        folium.Marker(
+        folium.CircleMarker(
             location=[lat, lon],
+            radius=9,
             tooltip=f"{location_code} • {price_text}",
             popup=folium.Popup(popup_html, max_width=320),
-            icon=folium.Icon(
-                color=color,
-                icon=icon,
-                prefix="fa",
-            ),
-       ).add_to(marker_cluster)
+            color=color,
+            fill=True,
+            fill_color=color,
+            fill_opacity=0.85,
+        ).add_to(marker_cluster)
 
     return m
